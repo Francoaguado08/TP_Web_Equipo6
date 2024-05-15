@@ -13,6 +13,7 @@ namespace TP_Web_Equipo6
     public partial class _Default : Page {
 
         public List<Articulo> listaArticulo;
+        public string urlImagen = "";
 
         protected void Page_Load(object sender, EventArgs e)
         {

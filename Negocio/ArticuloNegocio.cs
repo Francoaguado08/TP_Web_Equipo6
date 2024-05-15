@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient; //(0) Agrego esto para la conexion.
 using Dominio;
 using Negocio;
+using System.Runtime.ConstrainedExecution;
 
 namespace Negocio
 {   
@@ -14,67 +15,62 @@ namespace Negocio
     /// (2) Los metodos tienen que ser Public para yo poder accederlos desde el exterior.
     public class ArticuloNegocio
     {
-        public List <Articulo> listar() //Metodo que devuelve una lista.
+
+
+        // Modifico el metodo listar para manejar multiples imagenes si es que lo contiene el articulo....
+        public List<Articulo> listar()
         {
-            List<Articulo> lista = new List<Articulo>(); //(1)Creo mi lista.
+            List<Articulo> lista = new List<Articulo>();
             AccesoDatos datos = new AccesoDatos();
             try
             {
                 datos.setearConsulta("SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion AS Descripcion, M.Descripcion AS Marca, C.Descripcion AS Categoria, A.Precio, I.ImagenUrl FROM ARTICULOS A LEFT JOIN MARCAS M ON A.IdMarca = M.Id LEFT JOIN CATEGORIAS C ON A.IdCategoria = C.Id LEFT JOIN IMAGENES I ON A.Id = I.IdArticulo");
                 datos.ejecutarLectura();
 
-                //Ahora voy leyendo, si pudo leer ingresa al while y me posiciona el puntero en la siguiente posicion.
                 while (datos.Lector.Read())
                 {
-                    Articulo aux = new Articulo();
-                    aux.ID = (int)datos.Lector["Id"];
-                    aux.Codigo = (string)datos.Lector["Codigo"];
-                    aux.Nombre = (string)datos.Lector["Nombre"];
-                    aux.Descripcion = (string)datos.Lector["Descripcion"];
-                    aux.Precio = (decimal)datos.Lector["Precio"];              
+                    int idActual = (int)datos.Lector["Id"];
+                    Articulo aux = lista.FirstOrDefault(a => a.ID == idActual);
+
+                    if (aux == null)
+                    {
+                        aux = new Articulo
+                        {
+                            ID = (int)datos.Lector["Id"],
+                            Codigo = (string)datos.Lector["Codigo"],
+                            Nombre = (string)datos.Lector["Nombre"],
+                            Descripcion = (string)datos.Lector["Descripcion"],
+                            Precio = (decimal)datos.Lector["Precio"],
+                            Marca = new Marca
+                            {
+                                Descripcion = datos.Lector["Marca"] != DBNull.Value ? (string)datos.Lector["Marca"] : ""
+                            },
+                            Categoria = new Categoria
+                            {
+                                Descripcion = datos.Lector["Categoria"] != DBNull.Value ? (string)datos.Lector["Categoria"] : ""
+                            }
+                        };
+                        lista.Add(aux);
+                    }
 
                     if (!Convert.IsDBNull(datos.Lector["ImagenUrl"]))
                     {
-                        aux.UrlImagen = (string)datos.Lector["ImagenUrl"];
+                        aux.UrlImagenes.Add((string)datos.Lector["ImagenUrl"]);
                     }
-                    else
-                    {
-                        aux.UrlImagen = "";
-                    }
-
-                    if (!Convert.IsDBNull(datos.Lector["Marca"]))
-                    {
-                        aux.Marca.Descripcion = (string)datos.Lector["Marca"];
-                    }
-                    else
-                    {
-                        aux.Marca.Descripcion = "";
-                    }             
-
-                    if (!Convert.IsDBNull(datos.Lector["Categoria"]))
-                    {
-                        aux.Categoria.Descripcion = (string)datos.Lector["Categoria"];
-                    }
-                    else
-                    {
-                        aux.Categoria.Descripcion = "";
-                    }
-
-                    lista.Add(aux); //(7)- Finalmente agrego ese articulo a la lisa.
                 }
-                //Cuando no tenga mas nada que leer que devuelva la lista.
+
                 return lista;
             }
             catch (Exception ex)
-            { 
-                
-               throw ex;
+            {
+                throw ex;
             }
             finally
             {
                 datos.cerrarConexion();
-            }       
+            }
         }
+
 
         public void agregar(Articulo nuevo)
         {
@@ -117,7 +113,7 @@ namespace Negocio
                 int idArticulo = articulo.ID;
                 datos.setearConsulta("INSERT INTO IMAGENES (IdArticulo, ImagenUrl) VALUES (@IdArticulo, @ImagenUrl)");
                 datos.setearParametro("@IdArticulo", idArticulo);
-                datos.setearParametro("@ImagenUrl", nuevoArticulo.UrlImagen);
+                datos.setearParametro("@ImagenUrl", nuevoArticulo.UrlImagenes);
                 datos.cerrarConexion();
                 datos.ejecutarAccion();
             }
@@ -208,7 +204,7 @@ namespace Negocio
             {
                 datos.setearConsulta("UPDATE IMAGENES SET ImagenUrl = @ImagenUrl WHERE Id = (SELECT TOP 1 Id FROM IMAGENES WHERE IdArticulo = @IdA)");
                 datos.setearParametro("@IdA", modificar.ID);
-                datos.setearParametro("@ImagenUrl", modificar.UrlImagen);
+                datos.setearParametro("@ImagenUrl", modificar.UrlImagenes);
                 datos.cerrarConexion();
                 datos.ejecutarAccion();
             }

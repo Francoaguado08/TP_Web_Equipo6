@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Negocio
 {
-    internal class ImagenesNegocio
+  public class ImagenesNegocio
     {
 
         public List<Imagen> listar()
@@ -41,6 +41,130 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
+
+
+
+        public List<Imagen> listarImagenesArticuloSeleccionado(int idArticulo)
+        {
+            List<Imagen> lista = new List<Imagen>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                string consulta = String.Format("SELECT ImagenUrl FROM imagenes Where idArticulo = {0}", idArticulo);
+
+
+                datos.setearConsulta(consulta);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    Imagen aux = new Imagen();
+                    //aux.IDImagen = (int)datos.Lector["Id"];
+                    //aux.IDArticulo = (int)datos.Lector["IdArticulo"];
+                    aux.ImagenUrl = (string)datos.Lector["ImagenUrl"];
+
+                    lista.Add(aux);
+                }
+                return lista;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
+        //public Articulo listarArticulo(int idArticulo)
+        //{
+            
+        //    AccesoDatos datos = new AccesoDatos();
+        //    Articulo articulo = new Articulo();
+
+        //    try
+        //    {
+        //        string consulta = String.Format("SELECT * FROM ARTICULOS Where Id = {0}", idArticulo);
+
+
+        //        datos.setearConsulta(consulta);
+        //        datos.ejecutarLectura();
+
+        //        while (datos.Lector.Read())
+        //        {
+        //            articulo.ID = (int)datos.Lector["Id"];
+        //            articulo.Nombre = (string)datos.Lector["Nombre"];
+        //            articulo.Codigo = (string)datos.Lector["Codigo"];
+        //            articulo.Descripcion = (string)datos.Lector["Descripcion"];
+        //            articulo.Precio = (decimal)datos.Lector["Precio"];
+        //            listarArticulo
+                   
+        //        }
+                    
+        //        return articulo;
+        //    }
+                    
+
+                
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.ToString());
+        //        //throw ex;
+        //    }
+        //    finally
+        //    {
+        //        datos.cerrarConexion();
+        //    }
+        //}
+
+
+        public Articulo listarArticulo(int idArticulo)
+        {
+            AccesoDatos datos = new AccesoDatos();
+            Articulo articulo = null;
+
+            try
+            {
+                string consulta = "SELECT * FROM ARTICULOS WHERE Id = @IdArticulo";
+                datos.setearConsulta(consulta);
+                datos.setearParametro("@IdArticulo", idArticulo);
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    articulo = new Articulo
+                    {
+                        ID = (int)datos.Lector["Id"],
+                        Nombre = (string)datos.Lector["Nombre"],
+                        Codigo = (string)datos.Lector["Codigo"],
+                        Descripcion = (string)datos.Lector["Descripcion"],
+                        Precio = (decimal)datos.Lector["Precio"]
+                    };
+                }
+
+                return articulo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
+
+
+
+
+
+
 
         public void agregarImagen(Imagen nuevaImagen)
         {

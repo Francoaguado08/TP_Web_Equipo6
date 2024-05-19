@@ -33,7 +33,7 @@
             <div class="card-body">
                 <h1><%= arti.Nombre %></h1>
                 <h5><%= arti.Descripcion %></h5>
-                <p>ARS <%= Math.Round(arti.Precio, 2) %></p>
+                <p>ARS <%= arti.Precio%></p>
                 <a href="DetalleArticulo.aspx?id=<%= arti.ID %>" class="btn btn-primary">Ver más</a>
             </div>
         </div>
@@ -45,10 +45,7 @@
 
 
 
-    <div>
-        <!-- Etiqueta ASP.NET para mostrar el total, si es necesario -->
-        <asp:Label ID="lblTotal" runat="server" Text=""></asp:Label>
-    </div>
+  
 
 
 

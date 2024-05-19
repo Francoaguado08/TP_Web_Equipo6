@@ -1,0 +1,68 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Compras.aspx.cs" Inherits="TP_Web_Equipo6.Compras" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+
+
+
+ <br />
+    <div>
+        <h1>Compras</h1>
+    </div>
+    <br />
+
+    <br />
+    <h2>Detalle de compra</h2>
+    <br />
+
+   <asp:GridView ID="dgvCompras" CssClass="table" runat="server" AutoGenerateColumns="False" OnRowEditing="dgvCompras_RowEditing" OnRowUpdating="dgvCompras_RowUpdating" OnRowCancelingEdit="dgvCompras_RowCancelingEdit" DataKeyNames="ID">
+        <Columns>
+            <asp:BoundField DataField="Nombre" HeaderText="Nombre" ReadOnly="True" />
+            <asp:BoundField DataField="Codigo" HeaderText="Código" ReadOnly="True" />
+            <asp:BoundField DataField="Precio" HeaderText="Precio" DataFormatString="{0:C}" ReadOnly="True" />
+            <asp:TemplateField HeaderText="Cantidad">
+                <EditItemTemplate>
+                    <asp:TextBox ID="txtCantidad" runat="server" Text='<%# Bind("Cantidad") %>' />
+                </EditItemTemplate>
+                <ItemTemplate>
+                    <asp:Label ID="lblCantidad" runat="server" Text='<%# Eval("Cantidad") %>' />
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:TemplateField HeaderText="Total">
+                <ItemTemplate>
+                    <%# (Convert.ToDecimal(Eval("Precio")) * Convert.ToInt32(Eval("Cantidad"))).ToString("C") %>
+                </ItemTemplate>
+            </asp:TemplateField>
+            <asp:CommandField ShowEditButton="True" />
+        </Columns>
+    </asp:GridView>
+
+    <div>
+        <asp:Label ID="lblTotalGeneral" runat="server" Text="Total: $0.00" CssClass="total-label" />
+    </div>
+
+    <br />
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="#" class="btn btn-primary float-end">Comprar</a>
+            </div>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <a href="Default.aspx" class="btn btn-primary float-end">Volver</a>
+            </div>
+        </div>
+    </div>
+
+
+    
+
+
+
+
+
+</asp:Content>

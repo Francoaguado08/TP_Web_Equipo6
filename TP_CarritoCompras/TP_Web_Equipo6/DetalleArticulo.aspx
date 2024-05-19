@@ -18,7 +18,13 @@
                 int idArticulo = int.Parse(Request.QueryString["id"]);
                 listaImagenes = negocioObj.listarImagenesArticuloSeleccionado(idArticulo);
 
+             
+
+
+
+
             %>
+        
 
             <% for (int i = 0; i < listaImagenes.Count; i++)
                 { %>
@@ -53,15 +59,25 @@
             <asp:Label ID="txtCategoria" runat="server" />
          </div>             
     </div>
+    <br />
 
 
 
+    <div>
+        <a href="Default.aspx" class="btn btn-primary">Volver al Inicio</a>
+
+    </div>
 
 
+    <br />
 
-
-
-
+      
+    <br />
+    <br />
+    
+    <asp:Button ID="btnAgregarCarrito" runat="server" Text="Agregar al Carrito" OnClick="btnAgregarCarrito_Click" />
+    
+  
       
 
 
@@ -76,5 +92,5 @@
 
 
 
-            <a href="Default.aspx" class="btn btn-primary">Volver al Inicio</a>
+           
 </asp:Content>

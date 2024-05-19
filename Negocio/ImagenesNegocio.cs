@@ -82,7 +82,7 @@ namespace Negocio
 
         //public Articulo listarArticulo(int idArticulo)
         //{
-            
+
         //    AccesoDatos datos = new AccesoDatos();
         //    Articulo articulo = new Articulo();
 
@@ -102,14 +102,14 @@ namespace Negocio
         //            articulo.Descripcion = (string)datos.Lector["Descripcion"];
         //            articulo.Precio = (decimal)datos.Lector["Precio"];
         //            listarArticulo
-                   
+
         //        }
-                    
+
         //        return articulo;
         //    }
-                    
 
-                
+
+
         //    catch (Exception ex)
         //    {
         //        Console.WriteLine(ex.ToString());
@@ -122,6 +122,43 @@ namespace Negocio
         //}
 
 
+        //public Articulo listarArticulo(int idArticulo)
+        //{
+        //    AccesoDatos datos = new AccesoDatos();
+        //    Articulo articulo = null;
+
+        //    try
+        //    {
+        //        string consulta = "SELECT * FROM ARTICULOS WHERE Id = @IdArticulo";
+        //        datos.setearConsulta(consulta);
+        //        datos.setearParametro("@IdArticulo", idArticulo);
+        //        datos.ejecutarLectura();
+
+        //        while (datos.Lector.Read())
+        //        {
+        //            articulo = new Articulo
+        //            {
+        //                ID = (int)datos.Lector["Id"],
+        //                Nombre = (string)datos.Lector["Nombre"],
+        //                Codigo = (string)datos.Lector["Codigo"],
+        //                Descripcion = (string)datos.Lector["Descripcion"],
+        //                Precio = (decimal)datos.Lector["Precio"]
+        //            };
+        //        }
+
+        //        return articulo;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex.ToString());
+        //        throw;
+        //    }
+        //    finally
+        //    {
+        //        datos.cerrarConexion();
+        //    }
+        //}
+
         public Articulo listarArticulo(int idArticulo)
         {
             AccesoDatos datos = new AccesoDatos();
@@ -129,21 +166,44 @@ namespace Negocio
 
             try
             {
-                string consulta = "SELECT * FROM ARTICULOS WHERE Id = @IdArticulo";
+                // Consulta SQL actualizada para incluir las tablas MARCAS y CATEGORIAS
+                string consulta = @"
+            SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.Precio, 
+                   M.Descripcion AS Marca, C.Descripcion AS Categoria
+            FROM ARTICULOS AS A 
+            LEFT JOIN MARCAS AS M ON A.Id = M.Id
+            LEFT JOIN CATEGORIAS AS C ON A.Id = C.Id
+            WHERE A.Id = @IdArticulo";
+
                 datos.setearConsulta(consulta);
                 datos.setearParametro("@IdArticulo", idArticulo);
                 datos.ejecutarLectura();
 
-                while (datos.Lector.Read())
+                if (datos.Lector.Read())
                 {
+                    // Inicializar el objeto articulo con los valores leídos
                     articulo = new Articulo
                     {
                         ID = (int)datos.Lector["Id"],
                         Nombre = (string)datos.Lector["Nombre"],
                         Codigo = (string)datos.Lector["Codigo"],
                         Descripcion = (string)datos.Lector["Descripcion"],
-                        Precio = (decimal)datos.Lector["Precio"]
+                        Precio = (decimal)datos.Lector["Precio"],
+                        Marca = new Marca
+                        {
+                            Descripcion = datos.Lector["Marca"] != DBNull.Value ? (string)datos.Lector["Marca"] : null
+                        },
+                        Categoria = new Categoria
+                        {
+                            Descripcion = datos.Lector["Categoria"] != DBNull.Value ? (string)datos.Lector["Categoria"] : null
+                        }
                     };
+
+                    // Mensaje en caso de que la categoría no esté disponible
+                    if (articulo.Categoria.Descripcion == null)
+                    {
+                        Console.WriteLine("No disponible");
+                    }
                 }
 
                 return articulo;
@@ -158,11 +218,6 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
-
-
-
-
-
 
 
 

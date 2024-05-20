@@ -8,12 +8,9 @@
         <h1>Compras</h1>
     </div>
     <br />
-
-    <br />
     <h2>Detalle de compra</h2>
     <br />
-
-   <asp:GridView ID="dgvCompras" CssClass="table" runat="server" AutoGenerateColumns="False" OnRowEditing="dgvCompras_RowEditing" OnRowUpdating="dgvCompras_RowUpdating" OnRowCancelingEdit="dgvCompras_RowCancelingEdit" DataKeyNames="ID">
+    <asp:GridView ID="dgvCompras" CssClass="table" runat="server" AutoGenerateColumns="False" OnRowEditing="dgvCompras_RowEditing" OnRowUpdating="dgvCompras_RowUpdating" OnRowCancelingEdit="dgvCompras_RowCancelingEdit" DataKeyNames="ID">
         <Columns>
             <asp:BoundField DataField="Nombre" HeaderText="Nombre" ReadOnly="True" />
             <asp:BoundField DataField="Codigo" HeaderText="Código" ReadOnly="True" />
@@ -21,6 +18,10 @@
             <asp:TemplateField HeaderText="Cantidad">
                 <EditItemTemplate>
                     <asp:TextBox ID="txtCantidad" runat="server" Text='<%# Bind("Cantidad") %>' />
+                    <asp:RangeValidator ID="rvCantidad" runat="server" ControlToValidate="txtCantidad"
+                        MinimumValue="1" MaximumValue="10" Type="Integer" ErrorMessage="Cantidad Minima por factura de compra entre 1 y 10" Display="Dynamic" ForeColor="Red" />
+                    <asp:RegularExpressionValidator ID="revCantidad" runat="server" ControlToValidate="txtCantidad"
+                        ValidationExpression="^\d+$" ErrorMessage="Solo se permiten números" Display="Dynamic" ForeColor="Red" />
                 </EditItemTemplate>
                 <ItemTemplate>
                     <asp:Label ID="lblCantidad" runat="server" Text='<%# Eval("Cantidad") %>' />
@@ -57,8 +58,6 @@
             </div>
         </div>
     </div>
-
-
     
 
 

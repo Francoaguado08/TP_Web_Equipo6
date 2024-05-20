@@ -120,7 +120,8 @@ namespace TP_Web_Equipo6
         {
             if (!IsPostBack)
             {
-                CarritoCompras miCarrito = Session["compras"] as CarritoCompras ?? new CarritoCompras();
+                // Obtener o inicializar el carrito de compras
+                CarritoCompras miCarrito = (CarritoCompras)Session["compras"] ?? new CarritoCompras();
                 Session["compras"] = miCarrito;
 
                 if (Request.QueryString["id"] != null)
@@ -137,8 +138,12 @@ namespace TP_Web_Equipo6
                     }
                 }
 
-                BindGridView();
-                ActualizarTotalGeneral();
+                // Enlazar el GridView con los productos del carrito
+                dgvCompras.DataSource = miCarrito.ObtenerProductos();
+                dgvCompras.DataBind();
+
+                // Calcular y mostrar el total general
+                ActualizarTotalGeneral(miCarrito);
             }
         }
 
@@ -150,22 +155,40 @@ namespace TP_Web_Equipo6
 
         protected void dgvCompras_RowUpdating(object sender, GridViewUpdateEventArgs e)
         {
+            // Obtener el carrito de la sesión
             CarritoCompras miCarrito = (CarritoCompras)Session["compras"];
+
+            // Obtener la fila que se está editando
             GridViewRow row = dgvCompras.Rows[e.RowIndex];
             int id = Convert.ToInt32(dgvCompras.DataKeys[e.RowIndex].Value);
+
+            // Obtener la nueva cantidad del TextBox
             TextBox txtCantidad = (TextBox)row.FindControl("txtCantidad");
-            int nuevaCantidad = int.Parse(txtCantidad.Text);
-
-            Articulo producto = miCarrito.ObtenerProductos().Find(p => p.ID == id);
-            if (producto != null)
+            int nuevaCantidad;
+            if (int.TryParse(txtCantidad.Text, out nuevaCantidad) && nuevaCantidad >= 1 && nuevaCantidad <= 10)
             {
-                producto.Cantidad = nuevaCantidad;
-            }
+                // Actualizar la cantidad del producto en el carrito
+                Articulo producto = miCarrito.ObtenerProductos().Find(p => p.ID == id);
+                if (producto != null)
+                {
+                    producto.Cantidad = nuevaCantidad;
+                }
 
-            Session["compras"] = miCarrito;
-            dgvCompras.EditIndex = -1;
-            BindGridView();
-            ActualizarTotalGeneral();
+                // Guardar el carrito actualizado en la sesión
+                Session["compras"] = miCarrito;
+
+                // Salir del modo de edición y volver a enlazar el GridView
+                dgvCompras.EditIndex = -1;
+                BindGridView();
+
+                // Actualizar el total general
+                ActualizarTotalGeneral(miCarrito);
+            }
+            else
+            {
+                // Manejar el caso de una cantidad inválida
+                // Mostrar un mensaje de error o mantener el control en modo de edición
+            }
         }
 
         protected void dgvCompras_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
@@ -181,11 +204,10 @@ namespace TP_Web_Equipo6
             dgvCompras.DataBind();
         }
 
-        private void ActualizarTotalGeneral()
+        private void ActualizarTotalGeneral(CarritoCompras miCarrito)
         {
-            CarritoCompras miCarrito = (CarritoCompras)Session["compras"];
-            decimal totalGeneral = miCarrito.ObtenerTotal();
+            decimal totalGeneral = miCarrito.ObtenerProductos().Sum(a => a.Precio * a.Cantidad);
             lblTotalGeneral.Text = "Total: " + totalGeneral.ToString("C");
         }
     }
-} 
+}

@@ -168,12 +168,12 @@ namespace Negocio
             {
                 // Consulta SQL actualizada para incluir las tablas MARCAS y CATEGORIAS
                 string consulta = @"
-            SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.Precio, 
-                   M.Descripcion AS Marca, C.Descripcion AS Categoria
-            FROM ARTICULOS AS A 
-            LEFT JOIN MARCAS AS M ON A.Id = M.Id
-            LEFT JOIN CATEGORIAS AS C ON A.Id = C.Id
-            WHERE A.Id = @IdArticulo";
+                SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion, A.Precio, 
+                M.Descripcion AS Marca, C.Descripcion AS Categoria
+                FROM ARTICULOS AS A 
+                LEFT JOIN MARCAS AS M ON A.Id = M.Id
+                LEFT JOIN CATEGORIAS AS C ON A.Id = C.Id
+                WHERE A.Id = @IdArticulo";
 
                 datos.setearConsulta(consulta);
                 datos.setearParametro("@IdArticulo", idArticulo);

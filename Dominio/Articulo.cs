@@ -27,5 +27,6 @@ namespace Dominio
 
         // Propiedad para almacenar múltiples URLs de imágenes
         public List<string> UrlImagenes { get; set; }
+        public int Cantidad { get; set; } // Agrega esta propiedad
     }
 }

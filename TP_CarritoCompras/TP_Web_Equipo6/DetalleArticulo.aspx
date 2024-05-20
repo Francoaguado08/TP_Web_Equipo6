@@ -4,9 +4,9 @@
 
     <h1>Detalle del Articulo   </h1>
 
+
+
     <asp:GridView ID="dgvArticulos" CssClass="table" runat="server"></asp:GridView>
-
-
 
     <%--CARROUSEL DE IMAGENES--%>
     <div id="carouselExample" class="carousel slide">
@@ -17,14 +17,8 @@
                 List<Dominio.Imagen> listaImagenes = new List<Dominio.Imagen>();
                 int idArticulo = int.Parse(Request.QueryString["id"]);
                 listaImagenes = negocioObj.listarImagenesArticuloSeleccionado(idArticulo);
-
-             
-
-
-
-
             %>
-        
+
 
             <% for (int i = 0; i < listaImagenes.Count; i++)
                 { %>
@@ -44,7 +38,7 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-         <%--FIN DEL CARROUSEL--%>
+    <%--FIN DEL CARROUSEL--%>
 
 
 
@@ -57,7 +51,7 @@
             <asp:Label ID="txtDescripcion" runat="server" />
             <asp:Label ID="txtMarca" runat="server" />
             <asp:Label ID="txtCategoria" runat="server" />
-         </div>             
+        </div>
     </div>
     <br />
 
@@ -71,14 +65,20 @@
 
     <br />
 
-      
+
     <br />
     <br />
-    
-    <asp:Button ID="btnAgregarCarrito" runat="server" Text="Agregar al Carrito" OnClick="btnAgregarCarrito_Click" />
-    
-  
-      
+
+
+
+    <% 
+        // Obtener el ID del artículo de la cadena de consulta
+        int id = int.Parse(Request.QueryString["id"]);
+
+        // Usar el ID para crear el enlace "Ver más"
+        string agregarAlCarrito = string.Format("Compras.aspx?id={0}", idArticulo);
+    %>
+    <a href="<%= agregarAlCarrito %>" class="btn btn-primary">Agregar al Carrito</a>
 
 
 
@@ -92,5 +92,6 @@
 
 
 
-           
+
+
 </asp:Content>

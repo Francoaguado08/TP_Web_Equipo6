@@ -62,6 +62,7 @@
                         
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/About">Acerca de</a></li>
                         <li class="nav-item"><a class="nav-link" runat="server" href="~/Contact">Contacto</a></li>
+                        <li class="nav-item"><a class="nav-link" runat="server" href="~/Compras">🛒Compras</a></li>
                     </ul>
                 </div>
             </div>
@@ -99,9 +100,6 @@
     </asp:PlaceHolder>
    
 </body>
-
-
-
 
 
 

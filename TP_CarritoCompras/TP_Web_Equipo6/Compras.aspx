@@ -5,10 +5,11 @@
 
  <br />
     <div>
-        <h1>Compras</h1>
+        <h1 class ="bottom-100">Compras</h1>
     </div>
     <br />
     <h2>Detalle de compra</h2>
+    <h6>Puede modificar la cantidad de compra en determinado Articulo!</h6>
     <br />
     <asp:GridView ID="dgvCompras" CssClass="table" runat="server" AutoGenerateColumns="False" OnRowEditing="dgvCompras_RowEditing" OnRowUpdating="dgvCompras_RowUpdating" OnRowCancelingEdit="dgvCompras_RowCancelingEdit" DataKeyNames="ID">
         <Columns>

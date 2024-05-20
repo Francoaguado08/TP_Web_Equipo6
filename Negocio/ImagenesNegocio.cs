@@ -17,7 +17,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta("SELECT Id, IdArticulo, ImagenUrl FROM imagenes ORDER BY IdArticulo");
+                datos.setearConsulta("SELECT Id, IdArticulo, ImagenUrl FROM imagenes ");
                 datos.ejecutarLectura();
 
                 while (datos.Lector.Read())
@@ -80,84 +80,7 @@ namespace Negocio
         }
 
 
-        //public Articulo listarArticulo(int idArticulo)
-        //{
-
-        //    AccesoDatos datos = new AccesoDatos();
-        //    Articulo articulo = new Articulo();
-
-        //    try
-        //    {
-        //        string consulta = String.Format("SELECT * FROM ARTICULOS Where Id = {0}", idArticulo);
-
-
-        //        datos.setearConsulta(consulta);
-        //        datos.ejecutarLectura();
-
-        //        while (datos.Lector.Read())
-        //        {
-        //            articulo.ID = (int)datos.Lector["Id"];
-        //            articulo.Nombre = (string)datos.Lector["Nombre"];
-        //            articulo.Codigo = (string)datos.Lector["Codigo"];
-        //            articulo.Descripcion = (string)datos.Lector["Descripcion"];
-        //            articulo.Precio = (decimal)datos.Lector["Precio"];
-        //            listarArticulo
-
-        //        }
-
-        //        return articulo;
-        //    }
-
-
-
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.ToString());
-        //        //throw ex;
-        //    }
-        //    finally
-        //    {
-        //        datos.cerrarConexion();
-        //    }
-        //}
-
-
-        //public Articulo listarArticulo(int idArticulo)
-        //{
-        //    AccesoDatos datos = new AccesoDatos();
-        //    Articulo articulo = null;
-
-        //    try
-        //    {
-        //        string consulta = "SELECT * FROM ARTICULOS WHERE Id = @IdArticulo";
-        //        datos.setearConsulta(consulta);
-        //        datos.setearParametro("@IdArticulo", idArticulo);
-        //        datos.ejecutarLectura();
-
-        //        while (datos.Lector.Read())
-        //        {
-        //            articulo = new Articulo
-        //            {
-        //                ID = (int)datos.Lector["Id"],
-        //                Nombre = (string)datos.Lector["Nombre"],
-        //                Codigo = (string)datos.Lector["Codigo"],
-        //                Descripcion = (string)datos.Lector["Descripcion"],
-        //                Precio = (decimal)datos.Lector["Precio"]
-        //            };
-        //        }
-
-        //        return articulo;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.ToString());
-        //        throw;
-        //    }
-        //    finally
-        //    {
-        //        datos.cerrarConexion();
-        //    }
-        //}
+        
 
         public Articulo listarArticulo(int idArticulo)
         {
@@ -300,15 +223,16 @@ namespace Negocio
 
         public void vincularImagenes(List<Articulo> articulos, List<Imagen> imagenes)
         {
-        // Vamos artículo por artículo y recorremos todas las imágenes para agregarlas
-        // a la lista de imágenes de cada artículo, cuando sea apropiado.
+        
             foreach (Articulo miArticulo in articulos)
             {
                 foreach (Imagen miImagen in imagenes)
                 {
+                   
+
                     if (miImagen.IDArticulo.ToString() == miArticulo.ID.ToString())
                     {
-                        miArticulo.UrlImagenes.Add("");
+                        miArticulo.UrlImagenes.Add(miImagen.ImagenUrl);
                     }
                 }
             }

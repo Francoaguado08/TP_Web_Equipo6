@@ -10,19 +10,15 @@ using System.ComponentModel;
 
 namespace TP_Web_Equipo6
 {
-    public partial class _Default : Page {
-
+    public partial class _Default : Page
+    {
         public List<Articulo> listaArticulo;
-        public string urlImagen = "";
 
-       
-        //Cuando la pagina se carga por primera vez...
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack) //Verifica si la página se carga por primera vez o si se carga por una acción del usuario
+            if (!IsPostBack)
             {
-                GetProductos(); //ENCAPSULO TODO EN ESTA FUNCION....
-
+                obtenerProductos();
 
                 ddlFiltrarPor.Items.Add("Precio");
                 ddlFiltrarPor.Items.Add("Categoría");
@@ -37,31 +33,17 @@ namespace TP_Web_Equipo6
             {
                 listaArticulo = (List<Articulo>)Session["articulos"];
             }
-
-
-
-
-
-
-
         }
 
-
-        private void GetProductos()
+        private void obtenerProductos()
         {
-            ArticuloNegocio articulosNegocio = new ArticuloNegocio();
-            ImagenesNegocio imagenesNegocio = new ImagenesNegocio();
-
-            // Obtener la lista de artículos
-            listaArticulo = articulosNegocio.listar();
-
-            // Obtener la lista de imágenes
-            List<Imagen> imagenes = imagenesNegocio.listar();
-
-            // Vincular las imágenes a los artículos
-            imagenesNegocio.vincularImagenes(listaArticulo, imagenes);
-
-            // Almacenar los artículos en la sesión
+            ArticuloNegocio articulos = new ArticuloNegocio();
+            ImagenesNegocio imagenes = new ImagenesNegocio();
+            List<Imagen> misImagenes = new List<Imagen>();
+            misImagenes = imagenes.listar();
+            listaArticulo = new List<Articulo>();
+            listaArticulo = articulos.listar();
+            imagenes.vincularImagenes(listaArticulo, misImagenes);
             if (Session["articulos"] == null)
             {
                 Session.Add("articulos", listaArticulo);
@@ -72,19 +54,25 @@ namespace TP_Web_Equipo6
             }
         }
 
+       
 
-        //FILTRO POR PRECIO CATEGORIA O MARCA (1)
+        
+
+        protected void ddlCriterio_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Session["criterio"] = ddlCriterio.SelectedItem.ToString();
+        }
+
         protected void ddlFiltrarPor_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Session.Add("campo", ddlFiltrarPor.SelectedItem.ToString()); //(1)
-            if(ddlFiltrarPor.SelectedItem.ToString() == "Precio")
+            Session.Add("campo", ddlFiltrarPor.SelectedItem.ToString());
+
+            if (ddlFiltrarPor.SelectedItem.ToString() == "Precio")
             {
                 ddlCriterio.Items.Clear();
                 ddlCriterio.Items.Add("Ascendente");
                 ddlCriterio.Items.Add("Descendente");
                 Session.Add("criterio", ddlCriterio.SelectedItem.ToString());
-
-
             }
             else if (ddlFiltrarPor.SelectedItem.ToString() == "Marca")
             {
@@ -114,15 +102,8 @@ namespace TP_Web_Equipo6
             else
             {
                 ddlCriterio.Items.Clear();
-                GetProductos();
+                obtenerProductos();
             }
-
-        }//fIN DEL FILTRO.
-
-        //(2) DDL CRITERIO...
-        protected void ddlCriterio_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Session["criterio"] = ddlCriterio.SelectedItem.ToString();
         }
 
         protected void btnAplicarFiltro_Click(object sender, EventArgs e)
@@ -178,6 +159,4 @@ namespace TP_Web_Equipo6
             }
         }
     }
-
-
 }

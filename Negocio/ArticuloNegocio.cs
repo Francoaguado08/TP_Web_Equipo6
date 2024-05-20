@@ -223,7 +223,8 @@ namespace Negocio
             AccesoDatos datos = new AccesoDatos();
             try
             {
-                string consulta = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion AS Descripcion, M.Descripcion AS Marca, C.Descripcion AS Categoria, Precio, M.Id AS IDMarca, C.Id AS IDCategoria FROM Articulos AS A, Marcas AS M, Categorias AS C  WHERE M.Id = A.IdMarca AND C.Id = A.IdCategoria ";
+                string consulta = "SELECT A.Id, A.Codigo, A.Nombre, A.Descripcion AS Descripcion, M.Descripcion AS Marca, C.Descripcion AS Categoria, A.Precio, M.Id AS IDMarca, C.Id AS IDCategoria FROM Articulos AS A, Marcas AS M, Categorias AS C WHERE M.Id = A.IdMarca AND C.Id = A.IdCategoria ";
+
                 if (campo == "Precio")
                 {
                     switch (criterio)
@@ -245,6 +246,9 @@ namespace Negocio
                     consulta += "AND M.Descripcion = '" + criterio + "' ";
                 }
 
+                // Imprimir la consulta SQL generada
+                Console.WriteLine(consulta);
+
                 datos.setearConsulta(consulta);
                 datos.ejecutarLectura();
 
@@ -259,20 +263,28 @@ namespace Negocio
                     aux.Precio = (decimal)datos.Lector["Precio"];
 
                     aux.Marca = new Marca();
-                    aux.Marca.Descripcion= (string)datos.Lector["Marca"];
+                    aux.Marca.Descripcion = (string)datos.Lector["Marca"];
                     aux.Marca.ID = (int)datos.Lector["IDMarca"];
 
                     aux.Categoria = new Categoria();
                     aux.Categoria.Descripcion = (string)datos.Lector["Categoria"];
-                    aux.Categoria.ID= (int)datos.Lector["IDCategoria"];
+                    aux.Categoria.ID = (int)datos.Lector["IDCategoria"];
 
                     lista.Add(aux);
                 }
 
                 return lista;
             }
-            catch (Exception)
+            catch (SqlException ex)
             {
+                // Capturar y manejar excepciones SQL específicas
+                Console.WriteLine("Error de SQL: " + ex.Message);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                // Capturar y manejar otras excepciones
+                Console.WriteLine("Error: " + ex.Message);
                 throw;
             }
         }
